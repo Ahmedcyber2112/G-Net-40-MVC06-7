@@ -1,0 +1,231 @@
+﻿@model CreateMemberViewModel
+@{
+    ViewData["Title"] = "Create Member";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="text-primary-color fw-bold mb-0">Add New Member</h3>
+                    <p class="text-muted mt-1">Fill in the details below to register a new gym member.</p>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <form method="post" asp-action="CreateMember" enctype="multipart/form-data" id="createMemberForm" onsubmit="return preventDoubleSubmit(this);">
+
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                        <ul class="nav nav-pills nav-fill bg-light p-1 rounded-3" id="addMemberTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active rounded-3 fw-medium py-2" id="member-tab" data-bs-toggle="tab" data-bs-target="#member-info" type="button" role="tab">
+                                    <i class="bi bi-person-lines-fill me-2"></i> Member Info
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link rounded-3 fw-medium py-2" id="health-tab" data-bs-toggle="tab" data-bs-target="#health-info" type="button" role="tab">
+                                    <i class="bi bi-heart-pulse-fill me-2"></i> Health Data
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+
+                        <div asp-validation-summary="All" class="text-danger fw-bold mb-4 border rounded p-3 bg-white shadow-sm" role="alert"></div>
+
+                        <div class="tab-content">
+
+                            <div class="tab-pane fade show active" id="member-info" role="tabpanel" aria-labelledby="member-tab">
+
+                                <div class="d-flex flex-column align-items-center mb-5">
+                                    <div class="position-relative mb-3">
+                                        <div id="photoPlaceholder" class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-sm" style="width: 140px; height: 140px; border: 2px dashed #adb5bd;">
+                                            <i class="bi bi-camera text-muted" style="font-size: 2.5rem;"></i>
+                                        </div>
+                                        <img id="photoPreview" src="#" alt="Photo Preview" class="rounded-circle shadow-sm" style="width: 140px; height: 140px; object-fit: cover; border: 4px solid #fff; display: none;" />
+                                    </div>
+                                    <div class="text-center" style="max-width: 300px;">
+                                        <label asp-for="Photo" class="form-label fw-medium">Profile Photo <span class="text-danger">*</span></label>
+                                        <input asp-for="Photo" type="file" class="form-control form-control-sm" accept="image/jpeg, image/png, image/gif" id="photoInput" required />
+                                        <span asp-validation-for="Photo" class="text-danger d-block mt-1" style="font-size: 0.875em;"></span>
+                                        <small class="text-muted d-block mt-1">Max size: 5 MB. Allowed: JPG, PNG.</small>
+                                    </div>
+                                </div>
+
+                                <h5 class="text-primary-color fw-bold mb-3 border-bottom pb-2">Personal Information</h5>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="Name" class="form-label text-muted small mb-1 fw-bold">Full Name</label>
+                                            <input asp-for="Name" class="form-control border-0 shadow-none" placeholder="Enter member's name" />
+                                            <span asp-validation-for="Name" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="Email" class="form-label text-muted small mb-1 fw-bold">Email Address</label>
+                                            <input asp-for="Email" class="form-control border-0 shadow-none" placeholder="name@example.com" />
+                                            <span asp-validation-for="Email" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="Phone" class="form-label text-muted small mb-1 fw-bold">Phone Number</label>
+                                            <input asp-for="Phone" class="form-control border-0 shadow-none" placeholder="01X XXXX XXXX" />
+                                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="DateOfBirth" class="form-label text-muted small mb-1 fw-bold">Date of Birth</label>
+                                            <input asp-for="DateOfBirth" class="form-control border-0 shadow-none" type="date" />
+                                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="Gender" class="form-label text-muted small mb-1 fw-bold">Gender</label>
+                                            <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-select border-0 shadow-none">
+                                                <option value="">-- Select Gender --</option>
+                                            </select>
+                                            <span asp-validation-for="Gender" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="text-primary-color fw-bold mb-3 border-bottom pb-2">Address Details</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="BuildingNumber" class="form-label text-muted small mb-1 fw-bold">Building No.</label>
+                                            <input asp-for="BuildingNumber" class="form-control border-0 shadow-none" />
+                                            <span asp-validation-for="BuildingNumber" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="Street" class="form-label text-muted small mb-1 fw-bold">Street Name</label>
+                                            <input asp-for="Street" class="form-control border-0 shadow-none" />
+                                            <span asp-validation-for="Street" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="City" class="form-label text-muted small mb-1 fw-bold">City</label>
+                                            <input asp-for="City" class="form-control border-0 shadow-none" />
+                                            <span asp-validation-for="City" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="health-info" role="tabpanel" aria-labelledby="health-tab">
+                                <h5 class="text-primary-color fw-bold mb-4 border-bottom pb-2">Physical Characteristics</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="HealthRecordViewModel.Height" class="form-label text-muted small mb-1 fw-bold">Height (cm)</label>
+                                            <input asp-for="HealthRecordViewModel.Height" class="form-control border-0 shadow-none" placeholder="e.g. 180" />
+                                            <span asp-validation-for="HealthRecordViewModel.Height" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="HealthRecordViewModel.Weight" class="form-label text-muted small mb-1 fw-bold">Weight (kg)</label>
+                                            <input asp-for="HealthRecordViewModel.Weight" class="form-control border-0 shadow-none" placeholder="e.g. 75" />
+                                            <span asp-validation-for="HealthRecordViewModel.Weight" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="HealthRecordViewModel.BloodType" class="form-label text-muted small mb-1 fw-bold">Blood Type</label>
+                                            <select asp-for="HealthRecordViewModel.BloodType" class="form-select border-0 shadow-none">
+                                                <option value="">-- Select Blood Type --</option>
+                                                <option>A+</option>
+                                                <option>A-</option>
+                                                <option>B+</option>
+                                                <option>B-</option>
+                                                <option>O+</option>
+                                                <option>O-</option>
+                                                <option>AB+</option>
+                                                <option>AB-</option>
+                                            </select>
+                                            <span asp-validation-for="HealthRecordViewModel.BloodType" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <label asp-for="HealthRecordViewModel.Note" class="form-label text-muted small mb-1 fw-bold">Medical Notes (Optional)</label>
+                                            <input asp-for="HealthRecordViewModel.Note" class="form-control border-0 shadow-none" placeholder="Any injuries or conditions?" />
+                                            <span asp-validation-for="HealthRecordViewModel.Note" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white border-top pb-4 pt-3 px-4 px-md-5">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-controller="Members" asp-action="Index" class="btn btn-light border px-4 py-2 text-muted fw-medium rounded-3">
+                                <i class="bi bi-arrow-left me-2"></i> Cancel
+                            </a>
+
+                            <button type="submit" id="submitBtn" class="btn btn-primary px-5 py-2 fw-medium rounded-3 shadow-sm">
+                                <i class="bi bi-plus-lg me-2"></i> Create Member
+                            </button>
+
+                            <button type="button" id="loadingBtn" class="btn btn-primary px-5 py-2 fw-medium rounded-3 shadow-sm" style="display: none;" disabled>
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Saving...
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // معاينة الصورة
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size exceeds 5MB limit.');
+                    this.value = '';
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var preview = document.getElementById('photoPreview');
+                    var placeholder = document.getElementById('photoPlaceholder');
+
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    if(placeholder) placeholder.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // منع إرسال الفورم مرتين
+        function preventDoubleSubmit(form) {
+            if ($(form).valid()) {
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('loadingBtn').style.display = 'block';
+                return true;
+            }
+            return false;
+        }
+    </script>
+}
